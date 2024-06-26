@@ -1,14 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
-import 'package:qhali_app/controller/user_cubit.dart';
 import 'package:qhali_app/services/user_service.dart';
 
 final injector = GetIt.instance;
 
 Future<void> init() async {
-  // Bloc
-  injector.registerFactory(() => UserCubit(injector()));
-
   // Remote Data sources
   injector.registerLazySingleton(() => UserService(injector()));
 
@@ -20,8 +16,8 @@ Future<void> init() async {
             'Accept': '*/*',
           },
           baseUrl: 'https://jsonplaceholder.typicode.com',
-          receiveTimeout: const Duration(seconds: 150),
-          connectTimeout: const Duration(seconds: 150),
+          receiveTimeout: const Duration(seconds: 15),
+          connectTimeout: const Duration(seconds: 15),
         ),
       ));
 }

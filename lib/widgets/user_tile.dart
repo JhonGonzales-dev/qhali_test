@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qhali_app/controller/user_cubit.dart';
 import 'package:qhali_app/models/user.dart';
-
+import '../controller/user_controller.dart';
 import '../routes/home_route.dart';
 
 class UserListTile extends StatelessWidget {
@@ -12,6 +11,7 @@ class UserListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userController = Get.find<UserController>();
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       child: Card(
@@ -20,7 +20,7 @@ class UserListTile extends StatelessWidget {
           subtitle: Text(user.username),
           trailing: const Icon(Icons.arrow_forward_ios_rounded),
           onTap: () {
-            context.read<UserCubit>().setSelectedUser(user);
+            userController.setSelectedUser(user);
             context.pushNamed(HomeRoute.detailUser);
           },
         ),

@@ -1,37 +1,35 @@
-import 'dart:async';
-import 'package:equatable/equatable.dart';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:get/get.dart';
+
 import '../models/user.dart';
 import '../services/user_service.dart';
-part 'user_state.dart';
 
-class UserCubit extends Cubit<UserState> {
+class UserController extends GetxController {
   final UserService _service;
-  UserCubit(this._service) : super(UserInitial());
+  UserController(this._service);
+
   final formKey = GlobalKey<FormBuilderState>();
-  List<User> users = [];
-  Map<String, dynamic> formValues = {};
-  User? selectedUser;
+  RxList<User> users = <User>[].obs;
+  Map<String, dynamic> formValues = <String, dynamic>{}.obs;
+  Rx<User?> selectedUser = (null as User?).obs;
 
   Future<void> getAllUsers() async {
-    emit(UserLoading());
     final responseData = await _service.getUsers();
     responseData.when(
       (response) {
-        users = response.data;
-        emit(UserSuccess(users));
+        users.value = response.data;
       },
       (exception) {
-        emit(UserError());
+        log("exception");
       },
     );
   }
 
   void setSelectedUser(User user) {
-    selectedUser = user;
-    emit(UserSelected(user));
+    selectedUser.value = user;
   }
 
   Future<void> addUser() async {
@@ -58,21 +56,21 @@ class UserCubit extends Cubit<UserState> {
       }
     };
 
+    //-----POST https://jsonplaceholder.typicode.com/users
+
     final userData = User.fromJson(data);
     users.insert(0, userData);
-    emit(UserAdd(users));
   }
 
   Future<void> deleteUser(int userID) async {
     users.removeWhere((item) => item.id == userID);
-    emit(UserDeleted(users));
+    //----DELETE https://jsonplaceholder.typicode.com/users/{id}
   }
 
   Future<void> editUser() async {
     final field = formKey.currentState?.fields;
-
-    users = users.map((item) {
-      if (item.id != selectedUser!.id) return item;
+    users.value = users.map((item) {
+      if (item.id != selectedUser.value!.id) return item;
       item.name = field?["name"]?.value;
       item.username = field?["username"]?.value;
       item.email = field?["email"]?.value;
@@ -82,18 +80,16 @@ class UserCubit extends Cubit<UserState> {
       return item;
     }).toList();
 
-    emit(UserUpdated(users));
+    //---------PUT https://jsonplaceholder.typicode.com/users/{id}
   }
 
   Future<void> loadData() async {
     formValues = {
-      "name": selectedUser!.name,
-      "username": selectedUser!.username,
-      "email": selectedUser!.email,
-      "phone": selectedUser!.phone,
-      "website": selectedUser!.website,
+      "name": selectedUser.value!.name,
+      "username": selectedUser.value!.username,
+      "email": selectedUser.value!.email,
+      "phone": selectedUser.value!.phone,
+      "website": selectedUser.value!.website,
     };
-
-    emit(LoadedData(formValues));
   }
 }

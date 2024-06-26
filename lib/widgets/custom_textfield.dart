@@ -19,7 +19,7 @@ class CustomTextfield extends StatelessWidget {
     this.prefixIcon,
     this.errorText,
     this.obsecureText = false,
-    this.autovalidateMode,
+    this.autovalidateMode = AutovalidateMode.onUserInteraction,
   });
   final String? initialValue;
   final String nameField;

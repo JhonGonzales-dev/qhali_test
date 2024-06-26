@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:qhali_app/controller/user_cubit.dart';
 import 'routes/app_routes.dart';
 import 'injector.dart' as di;
 import 'utils/app_theme.dart';
@@ -17,22 +14,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => GetIt.instance<UserCubit>()),
-        ],
-        child: MaterialApp.router(
-          title: 'QHALI',
-          debugShowCheckedModeBanner: false,
-          routerConfig: AppRoute.router,
-          theme: AppTheme.themeData(context),
-          builder: (context, widget) {
-            return MediaQuery(
-              data: MediaQuery.of(context)
-                  .copyWith(textScaler: const TextScaler.linear(1)),
-              child: widget!,
-            );
-          },
-        ));
+    return MaterialApp.router(
+      title: 'QHALI',
+      debugShowCheckedModeBanner: false,
+      routerConfig: AppRoute.router,
+      theme: AppTheme.themeData(context),
+      builder: (context, widget) {
+        return MediaQuery(
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: const TextScaler.linear(1)),
+          child: widget!,
+        );
+      },
+    );
   }
 }
